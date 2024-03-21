@@ -8,10 +8,12 @@ import (
 )
 
 const VERSAO = 1.1
-const monitoramentos = 5
+const monitoramentos = 3
 const delay = 5
 
 func main() {
+	fmt.Println("Este programa está na versão", VERSAO)
+	fmt.Println()
 	for {
 		exibeIntroducao()
 		comando := leComando()
@@ -31,15 +33,18 @@ func main() {
 }
 
 func exibeIntroducao() {
-	fmt.Println("Este programa está na versão", VERSAO)
+	fmt.Println("Escolha uma das opções abaixo:")
 	fmt.Println("1 - Iniciar Monitoramento")
 	fmt.Println("2 - Exibir Logs")
 	fmt.Println("0 - Sair do Programa")
+	fmt.Println("")
 }
 
 func leComando() int {
+	fmt.Print("Resposta: ")
 	var comandoLido int
 	fmt.Scan(&comandoLido)
+	fmt.Println()
 	return comandoLido
 }
 
@@ -48,7 +53,12 @@ func iniciarMonitoramento() {
 	// var sites [4]string
 	// sites[0] = "https://www.alura.com.br"...
 
-	sites := []string{"https://www.alura.com.br", "https://www.caelum.com.br"}
+	sites := []string{
+		"https://www.alura.com.br",
+		"https://www.caelum.com.br",
+		"https://httpbin.org/status/200",
+		"https://httpbin.org/status/404",
+	}
 
 	// índice, valor (retorno "range")
 	for i := 0; i < monitoramentos; i++ {
@@ -57,8 +67,10 @@ func iniciarMonitoramento() {
 		}
 		if i != monitoramentos-1 {
 			time.Sleep(delay * time.Second)
+			fmt.Println("")
 		}
 	}
+	fmt.Println("")
 }
 
 func testaSite(site string) {
