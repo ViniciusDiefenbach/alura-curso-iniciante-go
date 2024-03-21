@@ -2,25 +2,31 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+	"time"
 )
 
-var VERSAO = 1.1
+const VERSAO = 1.1
+const monitoramentos = 5
+const delay = 5
 
 func main() {
-	exibeIntroducao()
-	comando := leComando()
-	switch comando {
-	case 1:
-		fmt.Println("Iniciando Monitoramento...")
-	case 2:
-		fmt.Println("Exibindo Logs...")
-	case 3:
-		fmt.Println("Fechando o programa...")
-		os.Exit(0)
-	default:
-		fmt.Println("Não conheço este comando")
-		os.Exit(-1)
+	for {
+		exibeIntroducao()
+		comando := leComando()
+		switch comando {
+		case 1:
+			iniciarMonitoramento()
+		case 2:
+			fmt.Println("Exibindo Logs...")
+		case 0:
+			fmt.Println("Fechando o programa...")
+			os.Exit(0)
+		default:
+			os.Exit(-1)
+			fmt.Println("Não conheço este comando")
+		}
 	}
 }
 
@@ -34,6 +40,33 @@ func exibeIntroducao() {
 func leComando() int {
 	var comandoLido int
 	fmt.Scan(&comandoLido)
-	fmt.Println("O comando escolhido foi", comandoLido)
 	return comandoLido
+}
+
+func iniciarMonitoramento() {
+	fmt.Println("Iniciando Monitoramento...")
+	// var sites [4]string
+	// sites[0] = "https://www.alura.com.br"...
+
+	sites := []string{"https://www.alura.com.br", "https://www.caelum.com.br"}
+
+	// índice, valor (retorno "range")
+	for i := 0; i < monitoramentos; i++ {
+		for _, v := range sites {
+			testaSite(v)
+		}
+		if i != monitoramentos-1 {
+			time.Sleep(delay * time.Second)
+		}
+	}
+}
+
+func testaSite(site string) {
+	resp, _ := http.Get(site)
+	switch resp.StatusCode {
+	case 200:
+		fmt.Println("Site:", site, "foi carregado com sucesso!")
+	default:
+		fmt.Println("Site:", site, "está com problemas. Status code:", resp.StatusCode)
+	}
 }
